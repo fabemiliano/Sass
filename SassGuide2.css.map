@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,KAAK,EAAE,KAAK,EAAE,KAAK,CAAC;EAElB,KAAK,EAAE,IAAI;EACX,MAAM,EAAE,eAAe;CACxB",
+    "sources": [
+        "SassGuide2.scss"
+    ],
+    "names": [],
+    "file": "SassGuide2.css"
+}

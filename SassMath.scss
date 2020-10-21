@@ -1,0 +1,20 @@
+// $e: numero neperiano;
+// $pi: pi;
+// $ceil($number): arrendonda pra cima;
+// $floor($number): arrendonda pra baixo;
+// $clamp($min, $max): restringe entre dois números
+// $min(...): retorna o menor número;
+// $max(...): retorna o maior número;
+// $round($number): arredonda para o número mais próximo;
+// $abs($number): retorno o valor positivo 
+
+// $hypot(...): retorna o valor do terceiro lado de um trinagulo retangulo
+// $lengths: 1in, 10cm, 50px;
+// @debug math.hypot($lengths...); // spread
+
+// $log($number): cálculo do lg na base 10
+// $log($number, $number2): cálculo do lg na base $number2;
+// $pow($number, $number2): $number ^ $number2;
+// $percentage($number): converte decimal para porcentagem;
+// $random($limit): numero inteiro entre 1 e o valor limit
+// $random(): numero randomico de 0 a 1

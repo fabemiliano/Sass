@@ -1,0 +1,184 @@
+//============================================VARIÁVEIS=============================================
+
+// Em Sass é possível criar variáveis e a atribuir valores específicos a elas. A vantagem disso é que se, por exemplo, uma determinada cor é usada em várias partes do código, ao invés de alterar várias vezes, é alterado apenas em um único lugar
+// A sintate é simples, basta usar $nome_da_variavel e para chamar mesma coisa.
+
+$main-color: #ff00cd;
+$secondary-color: #12e740;
+$tertiary-color: #c0e712;
+$main-header: 3em;
+$secondary-header: 2em;
+$children: 1, 2, 3; // essavariável com vírgulas, é como se fosse um array pra ser usado com o @each
+$quarternary-color: rgb(231, 135, 9);
+
+
+//============================================IMPORTAÇÃO===============================================
+
+// Para evitar que o css fique muito longo, é possivel que ele seja divido em pedaços menores e adicionar ao arquivo principal os outros arquvios gerados com o @import
+@import url(/SassGuide2.css);
+
+// Posso também criar um novo arquivo que comece com _ que o sass irá reconhecer que é a pasta a ser importada. Nesse caso se usa o @use e aleém disso é preciso usar o nome_do_arquivo_importado.nome_da_propriedade
+@use 'modules';
+
+//============================================HERANÇA===============================================
+// Posso definir um conjunto de propriedades que serão herdadas pelo elemento quando a ele for passada
+// A sintaxe é parecida com a da variável, a diferença é que a herança é chamado com % e {}. Para chamar porém e preciso passar antes @extends
+
+%bg {
+  background: $quarternary-color;
+  font-weight: 900;
+  color: #000;
+  position: relative;
+}
+
+%letters {
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+//============================================MIXING===============================================
+
+// O mixin é um conjunto de propriedades que irá retornar valores diferentes de acordo com os parâmetros que lhe for passado, ou mesmo se não for passado nenhum parametro
+// a sintaxe do mxin é @minix nome_do_mixing (par1, par2...) Vale ressaltar que se o mixing tiver 3 argumetnos, devem ser passados 3 argumentos senão irá falhar
+@mixin justifyContent($var1, $var2:false) { // O mixing pode receber um valor padrão, caso não seja passado alguma parâmetro
+  justify-content: $var1; // como depende o mixing o justify-content será passado ao se chamar o mixing
+  @if $var2 { // posso criar um mixin e usar outras funções do sass, como o if. Nesse caso a sintaxe que o if foi escrito está verificando se var2 é true
+    color: #f00;
+    font-size: 20px;
+  }
+}
+
+//============================================FUNÇÕES===============================================
+
+@function rgbRandom() {  // Como no javascript as funções podem receber parâmetros e também mais imortante elas retornam algo. A sintaze é @function nome_da_funcao ()
+  $r: random(255); // modulo random (vai de 1 a 255)
+  $g: ceil(random() * 255); //random() vai de 0 a 1)
+  $b: floor(random() * 255);
+  //@return para retornar
+  @return rgb($r, $g, $b)
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  height: 100vh;
+  box-sizing: border-box;
+  margin:0;
+  padding: 0;
+  // background: modules.$zero-color
+}
+
+
+.main-container {
+  width: 90%;
+  height: 90%;
+  border: 1px solid;
+  display: flex;
+  flex-direction: column;
+  // o nesting é feito em relacão ao elemento filho, qualquer outro tipo de nesting deve ser usado o ampersand
+  & > div { // nesse caso só as div filhas direto terão as propriedades
+    flex: 1 1 0;
+  }
+  // esse abaixo é um nesting de uma div filha
+  .sub1 {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    // chamada da variável de cor
+    background: $tertiary-color;
+    // nesting com >
+    & > p {
+      background: $main-color;
+    }
+    & > div {
+      background: $secondary-color;
+    }
+    .box {
+      // width: 40px;
+      border: 1px solid black;
+      display: flex;
+      // justify-content: center;
+      align-items: center;
+      //nesting com nth-child()
+      &:nth-child(1) {
+        // para utilizar o mixin é preciso chamalo com @include e passar os argumentos
+        @include justifyContent(flex-start, true)
+      }
+      &:nth-child(2) {
+        @include justifyContent(center, false)
+      }
+      &:nth-child(3) {
+        @include justifyContent(flex-end, any)
+      }
+      // @each é uma forma de loop, mas que usa como se fosse um array iterável. Logo acima $children foi definido com 3 valores e daí é invocado um iterador que nesse caso foi chamado de $child
+      @each $child in $children {
+        &:nth-child(#{$child}) {
+          // para fazer cálculo no sass que envolvam dimessões é preciso usar o calc e a variável é invocada com #{child} e logo em seguida a unidade de medida
+          width: calc(#{$child}px * 20);
+          height: calc(#{$child}px * 20);
+        }
+      }
+    }
+  }
+
+  .sub2 {
+    // o backgroud dessa div é obtido por meio da invocacao da funcão que foi definida acima, para invocar é só chamar pelo nome da função
+    background: rgbRandom();
+  }
+  .sub3 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    p {
+      width: 50%;
+      text-align: center;
+      padding: 10px 0;
+      // além do @each posso iterar com o for. A sintaxe é @for $variavel from x through y {}
+      @for $i from 1 through 3 {
+        &:nth-child(#{$i}) {
+        @if $i == 1 {  // aqui temos outro if. Para condicionar o igual é feito com == e sem parantêses
+            width: 40px;
+            background: $secondary-color;
+            &:hover {
+              background: $tertiary-color;
+            }
+          }
+          @else if $i == 2 { // posso usar @else if
+            &:nth-child(#{$i}) {
+              width: 80px;
+              background: $main-color;
+              &:hover {
+                background: $secondary-color;
+              }
+            }
+          }
+          
+        @else { // e finalizo com @else
+          &:nth-child(#{$i}) {
+            width: 120px;
+            background: $tertiary-color;
+              &:hover {
+                background: $main-color;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .sub4 {
+    @extend %bg; // aqui invoco oa herança definida no começo
+    p {
+      @extend %letters; // outra herança
+      margin: 0;
+      padding: 0;
+    }
+  }
+}
